@@ -3,7 +3,7 @@
     style="height: 75px; position: sticky; z-index: 1; top: 0"
     class="blue pt-3 pt-md-2 lighten-2 full-width align-center justify-center"
   >
-    <router-link class="mr-4 mr-md-11 fill-height" to="/">
+    <router-link class="fill-height" to="/">
       <img src="~assets/img/logo.png" alt="Nuxt.js Logo" class="logo" />
     </router-link>
 

@@ -1,6 +1,16 @@
 export default {
   add(state, produto) {
-    state.cart.push(produto)
+    let add = true
+    state.cart.forEach((cartItem) => {
+      if (
+        cartItem.nome === produto.nome &&
+        cartItem.variante === produto.variante
+      ) {
+        return (add = false)
+      }
+    })
+    if (add) state.cart.push(produto)
+    else throw new Error('Produto ja existe no carrinho')
   },
   remove(state, index) {
     state.cart.splice(index, 1)

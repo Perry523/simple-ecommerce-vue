@@ -1,40 +1,39 @@
 <template>
   <div>
     <navbar />
+    <v-snackbar v-model="snackbar" top timeout="1500">
+      <div class="text-center">Produto removido do carrinho</div>
+    </v-snackbar>
     <p style="font-weight: 300" class="text-center text-h3 my-10">
       Carrinho ({{ produtos.length || 0 }})
     </p>
     <div class="full-width px-4">
       <div class="full-width d-flex flex-column-reverse flex-sm-row">
         <div class="d-flex mr-sm-4 mr-md-8 cards flex-column">
-          <div
+          <v-card
             v-for="(produto, i) in produtos"
             :key="i"
-            class="fill-height col"
+            class="fill-height cont mb-1 card"
           >
-            <v-card>
-              <div class="d-flex flex-no-wrap">
-                <v-avatar
-                  class="pa-sm-1 pl-0 my-sm-1 pa-md-3 py-md-4 py-sm-2 col-lg-4 col-5"
-                  style="height: 150px"
-                  tile
-                >
-                  <v-img
-                    contain
-                    class="col"
-                    :src="$axios.defaults.baseURL + produto.imgs[0]"
-                  ></v-img>
-                </v-avatar>
+            <div class="cont full-width">
+              <div class="d-flex fill-height flex-no-wrap">
+                <img
+                  class="col-6 col-sm-5 col-md-4 col-lg-3"
+                  height="100%"
+                  width="100%"
+                  :src="$axios.defaults.baseURL + produto.imgs[0]"
+                />
                 <div
-                  class="flex-grow-1 d-flex flex-column align-center justify-space-around"
+                  class="flex-grow-1 d-flex flex-column justify-space-around"
                 >
                   <v-card-title
-                    class="headline"
+                    class="headline text-center"
                     v-text="produto.nome"
                   ></v-card-title>
                   <v-card-subtitle
                     v-text="'R$ ' + produto.preco"
                   ></v-card-subtitle>
+                  <v-card-title> {{ produto.variante }} </v-card-title>
                 </div>
                 <div class="d-flex flex-column justify-between">
                   <v-btn fab icon @click="remover"
@@ -51,10 +50,10 @@
                   </div>
                 </div>
               </div>
-            </v-card>
-          </div>
+            </div>
+          </v-card>
         </div>
-        <div class="price col-12 col-sm-4">
+        <div class="price col-12 col-sm-4 mb-2">
           <span class="sumario text-h4">Sumário</span>
           <p class="">
             Subtotal: <b class="">R$ {{ preco || 0 }},00</b>
@@ -62,9 +61,7 @@
           <p class="">
             Frete: <b class="">R$ {{ frete || 0 }},00</b>
           </p>
-          <hr />
-          <p class="q-my-sm text-h4">Total: R$ {{ preco + frete || 0 }},00</p>
-          <hr />
+          <p class="pt-3 text-h4">Total: R$ {{ preco + frete || 0 }},00</p>
           <v-btn class="red my-3 white--text">Comprar</v-btn>
         </div>
       </div>
@@ -84,6 +81,7 @@ export default {
     return {
       preco: 0,
       frete: 0,
+      snackbar: false,
     }
   },
   computed: mapGetters({
@@ -100,7 +98,9 @@ export default {
   },
   mounted() {
     this.preco = this.produtos.length
-      ? this.produtos.map((produto) => produto.preco).reduce((a, b) => a + b)
+      ? this.produtos
+          .map((produto) => produto.preco * produto.quantidade)
+          .reduce((a, b) => a + b)
       : 0
   },
   methods: {
@@ -121,12 +121,18 @@ export default {
     },
     remover(i) {
       this.$store.commit('cart/remove', i)
+      this.snackbar = true
     },
   },
 }
 </script>
 
 <style>
+@media (max-width: 600px) {
+  .cont {
+    height: 160px;
+  }
+}
 @media (min-width: 600px), (max-width: 916px) {
   .cards {
     flex-grow: 20;
@@ -141,6 +147,9 @@ export default {
   }
   .price {
     max-height: 300px;
+  }
+  .cont {
+    height: 220px;
   }
 }
 .sumario {
@@ -158,5 +167,8 @@ export default {
   padding: 0px 10px;
   flex-grow: 0;
   top: 80px;
+}
+.cont {
+  height: 180px;
 }
 </style>

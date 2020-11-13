@@ -1,5 +1,5 @@
 <template>
-  <div class="column items-center">
+  <div class="column items-center fill-height">
     <NavBar />
     <div class="full-width d-flex justify-center">
       <div class="col-xm-12 col-sm-10 col-md-9 col-lg-8">

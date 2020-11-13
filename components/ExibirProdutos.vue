@@ -161,8 +161,8 @@ export default {
     box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.75);
   }
   .card-img {
-    height: 150px;
-    width: 150px;
+    height: 120px;
+    width: 120px;
     padding: 0px 5px 0px 5px;
     border-radius: 10px 10px 8px 8px;
     margin: 6px 5px 6px 1px;

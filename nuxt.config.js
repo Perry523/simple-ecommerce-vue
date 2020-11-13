@@ -50,6 +50,7 @@ export default {
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
     '@nuxtjs/vuetify',
+    '@nuxtjs/pwa',
   ],
   /*
    ** Nuxt.js modules
@@ -58,6 +59,15 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
   ],
+  manifest: {
+    name: 'Vuejs PWA Ecommerce',
+    lang: 'pt',
+    start_url: '/',
+    useWebmanifestExtension: true,
+    short_name: 'VPE',
+    theme_color: '#c0ffee',
+  },
+  icon: [{ iconSrc: './static/icon.png' }],
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options

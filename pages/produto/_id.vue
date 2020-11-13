@@ -1,5 +1,10 @@
 <template>
   <div>
+    <v-snackbar v-model="snackbar" top timeout="1500">
+      <div class="text-center">
+        {{ snackText }}
+      </div>
+    </v-snackbar>
     <navbar />
     <div class="row px-4 py-2">
       <div
@@ -27,10 +32,10 @@
         style="max-width: 650px"
         class="d-flex flex-column justify-space-between col-12 col-sm"
       >
-        <span class="text-h5 text-center mb-5 mt-2 mt-sm-5 mb-sm-5">{{
+        <span class="text-h6 text-md-h5 mb-5 mt-2 mt-sm-5 mb-sm-5">{{
           produto.nome
         }}</span>
-        <span class="text-h4 pl-3 mb-5">R$ {{ produto.preco }}</span>
+        <span class="text-h5 text-md-h4 pl-3 mb-5">R$ {{ produto.preco }}</span>
         <div class="d-flex flex-column mb-3 flex-grow-0">
           <label v-if="selectedVariant" class="mb-4" for="#produtos"
             >Variante: <b>{{ selectedVariant }}</b></label
@@ -74,6 +79,8 @@ export default {
       image: '',
       selectedVariant: 0,
       quantidade: 1,
+      snackbar: false,
+      snackText: '',
     }
   },
   computed: mapGetters({
@@ -91,8 +98,20 @@ export default {
   methods: {
     add(produto) {
       produto.quantidade = this.quantidade
-      if (this.selectedVariant) this.$store.commit('cart/add', produto)
-      else alert('Selecione uma variante')
+      if (this.selectedVariant) {
+        produto.variante = this.selectedVariant
+        try {
+          this.$store.commit('cart/add', produto)
+          this.snackbar = true
+          this.snackText = 'Produto adicionado ao carrinho'
+        } catch (error) {
+          this.snackbar = true
+          this.snackText = error.message
+        }
+      } else {
+        this.snackbar = true
+        this.snackText = 'Selecione uma variante'
+      }
     },
     selectVariant(variant, e) {
       const selected = document.getElementsByClassName('selectedVariant')
@@ -111,7 +130,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .selectedIMG {
   border: 2px solid rgb(255, 107, 54) !important;
   padding: 0px !important;
