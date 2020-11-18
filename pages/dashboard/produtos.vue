@@ -12,17 +12,21 @@
           <v-toolbar-title>Produtos</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog
+            max-width="1200px"
+            @click:outside="closeModal"
+            v-model="dialog"
+          >
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
                 Adicionar
               </v-btn>
             </template>
-            <v-card>
-              <v-card-title>
-                <span class="headline">{{ formTitle }}</span>
-              </v-card-title>
-            </v-card>
+            <cadastrar-produto
+              :produtoEditavel="editedItem"
+              @close-modal="closeModal"
+              class="white"
+            ></cadastrar-produto>
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
@@ -47,26 +51,25 @@
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize"> Reset </v-btn>
-      </template>
     </v-data-table>
   </div>
 </template>
 
 <script>
 import drawer from '@/components/Drawer'
+import cadastrarProduto from '@/components/cadastrar-produto'
 export default {
   components: {
     drawer,
+    cadastrarProduto,
   },
   data: () => ({
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'Nome', value: 'nome' },
-      { text: 'Preço', value: 'preco' },
-      { text: 'Estoque', value: 'estoque' },
+      { text: 'Nome', value: 'name' },
+      { text: 'Preço', value: 'price' },
+      { text: 'Estoque', value: 'stock' },
       { text: 'Ações', value: 'actions' },
     ],
     desserts: [],
@@ -90,44 +93,25 @@ export default {
     },
   },
 
-  async created() {
-    this.desserts = await this.$axios.$get('/produtos')
-    console.log(this.desserts)
+  created() {
+    this.carregarDados()
   },
-
   methods: {
-    initialize() {
-      this.desserts = [
-        {
-          name: 'Donut',
-          price: 452,
-          stock: 25.0,
-        },
-        {
-          name: 'KitKat',
-          price: 518,
-          stock: 26.0,
-        },
-      ]
-    },
-
     editItem(item) {
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
-
     deleteItem(item) {
       this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
-
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1)
+    async deleteItemConfirm() {
+      await this.$axios.delete('/products/' + this.editedItem.id)
       this.closeDelete()
+      this.carregarDados()
     },
-
     close() {
       this.dialog = false
       this.$nextTick(() => {
@@ -135,7 +119,10 @@ export default {
         this.editedIndex = -1
       })
     },
-
+    closeModal() {
+      this.dialog = false
+      this.editedItem = {}
+    },
     closeDelete() {
       this.dialogDelete = false
       this.$nextTick(() => {
@@ -143,7 +130,6 @@ export default {
         this.editedIndex = -1
       })
     },
-
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.desserts[this.editedIndex], this.editedItem)
@@ -151,6 +137,9 @@ export default {
         this.desserts.push(this.editedItem)
       }
       this.close()
+    },
+    async carregarDados() {
+      this.desserts = await this.$axios.$get('/products')
     },
   },
 }

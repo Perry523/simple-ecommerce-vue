@@ -91,7 +91,7 @@ export default {
       this.$axios.defaults.baseURL.length - 1,
       ''
     )
-    this.produto = await this.$axios.$get('/produtos/' + this.$route.params.id)
+    this.produto = await this.$axios.$get('/products/' + this.$route.params.id)
     this.image = this.produto.imgs[0]
   },
 

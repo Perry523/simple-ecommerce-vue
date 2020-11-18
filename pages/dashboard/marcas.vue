@@ -9,7 +9,7 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Produtos</v-toolbar-title>
+          <v-toolbar-title>Marcas</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
@@ -26,7 +26,7 @@
                 <v-container>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.brand"
+                      v-model="editedItem.name"
                       label="Nome"
                     ></v-text-field>
                   </v-col>
@@ -65,9 +65,6 @@
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize"> Reset </v-btn>
-      </template>
     </v-data-table>
   </div>
 </template>
@@ -82,18 +79,19 @@ export default {
     dialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'Nome', value: 'brand' },
+      { text: 'Nome', value: 'name' },
       { text: 'Ações', value: 'actions' },
     ],
     desserts: [],
     editedIndex: -1,
     editedItem: {},
+    editedItemName: '',
     defaultItem: {},
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      return this.editedIndex === -1 ? 'Cadastrar' : 'Editar'
     },
   },
 
@@ -106,32 +104,14 @@ export default {
     },
   },
 
-  async created() {
-    this.desserts = await this.$axios.$get('/brands')
+  created() {
+    this.carregarDados()
   },
 
   methods: {
-    initialize() {
-      this.desserts = [
-        {
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-      ]
-    },
-
     editItem(item) {
       this.editedIndex = this.desserts.indexOf(item)
+      this.editedItemName = item.brand
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
@@ -143,10 +123,11 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1)
-      this.closeDelete()
+      this.$axios.delete('/brands/' + this.editedItem.id).then(() => {
+        this.closeDelete()
+        this.carregarDados()
+      })
     },
-
     close() {
       this.dialog = false
       this.$nextTick(() => {
@@ -162,13 +143,16 @@ export default {
         this.editedIndex = -1
       })
     },
-
-    save() {
+    async carregarDados() {
+      this.desserts = await this.$axios.$get('/brands')
+    },
+    async save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
+        await this.$axios.put('/brands/' + this.editedItem.id, this.editedItem)
       } else {
-        this.desserts.push(this.editedItem)
+        await this.$axios.post('/brands', this.editedItem)
       }
+      this.carregarDados()
       this.close()
     },
   },

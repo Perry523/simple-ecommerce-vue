@@ -55,7 +55,7 @@ export default {
   },
 
   async mounted() {
-    this.produtos = await this.$axios.$get('/produtos')
+    this.produtos = await this.$axios.$get('/products')
     this.size = window.innerWidth
   },
   methods: {

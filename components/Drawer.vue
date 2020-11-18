@@ -10,9 +10,9 @@
 
     <v-list dense nav>
       <v-list-item
-        :to="'/dashboard' + item.to"
         v-for="item in items"
         :key="item.title"
+        :to="'/dashboard' + item.to"
         link
       >
         <v-list-item-icon>

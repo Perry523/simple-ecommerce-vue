@@ -46,6 +46,14 @@
           label="Nome"
           class="col-12"
         />
+        <v-text-field
+          id="link"
+          v-model="produto.link"
+          name="link"
+          label="Link"
+          placeholder="camisa-marca-x"
+          class="col-12"
+        />
         <div class="d-flex">
           <v-select
             id="marca"
@@ -150,11 +158,20 @@
       >
     </div>
     <v-btn color="success" @click="cadastrar">salvar</v-btn>
+    <v-btn color="danger" class="mt-3" @click="$emit('close-modal')"
+      >Cancelar</v-btn
+    >
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    produtoEditavel: {
+      type: Object,
+      default: () => {},
+    },
+  },
   data() {
     return {
       produto: {},
@@ -162,19 +179,32 @@ export default {
       imgs: [],
       selectedImage: 0,
       brands: [],
+      edit: false,
       categorias: [],
       placeholder:
         'https://i1.wp.com/spassodourado.com.br/wp-content/uploads/2015/01/default-placeholder.png',
     }
   },
+  watch: {
+    produtoEditavel() {
+      this.produto = this.produtoEditavel
+      if (this.produtoEditavel.id) {
+        this.edit = true
+      }
+    },
+  },
   async mounted() {
+    this.produto = this.produtoEditavel
+    if (this.produtoEditavel.id) {
+      this.edit = true
+    }
     this.categorias = await this.$axios
       .$get('/categories')
       .then((categorias) => {
-        return categorias.map((categoria) => categoria.category)
+        return categorias.map((categoria) => categoria.name)
       })
     this.brands = await this.$axios.$get('/brands').then((brands) => {
-      return brands.map((brand) => brand.brand)
+      return brands.map((brand) => brand.name)
     })
   },
   methods: {
@@ -199,14 +229,24 @@ export default {
           JSON.stringify({ name: variant.name, stock: variant.stock })
         )
       })
+      if (this.edit) {
+        this.$axios
+          .put('/products/' + this.produto.id, formData, {
+            headers: {
+              'Content-Type': `multipart/form-data;`,
+            },
+          })
+          .then(() => this.$emit('close-modal'))
+          .catch((error) => alert(error.message))
+      }
       this.$axios
-        .post('/produtos', formData, {
+        .post('/products', formData, {
           headers: {
             'Content-Type': `multipart/form-data;`,
           },
         })
-        .then(() => this.$router.push('/'))
-        .catch((error) => alert(error))
+        .then(() => this.$emit('close-modal'))
+        .catch((error) => alert(error.message))
     },
     imgToUpload(e, i) {
       const file = e.target.files[0]

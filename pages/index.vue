@@ -2,13 +2,13 @@
   <div>
     <NavBar class="mb-6" />
     <div class="px-1">
-      <div class="d-flex justify-center">
+      <div class="d-flex justify-center carrossel">
         <v-carousel
           cycle
-          height="42vh"
           hide-delimiter-background
           show-arrows-on-hover
-          class="col-12 col-sm-11 col-md-10"
+          class="col-12 col-sm-11 col-md-10 teste"
+          height="100%"
         >
           <v-carousel-item v-for="(slide, i) in slides" :key="i">
             <v-sheet height="100%">
@@ -67,3 +67,12 @@ export default {
   },
 }
 </script>
+<style scoped>
+.carrossel {
+  min-height: 330px;
+  height: 32vw;
+}
+.teste {
+  height: 100% !important;
+}
+</style>
