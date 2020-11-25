@@ -1,10 +1,6 @@
 <template>
   <div v-resize="resize" style="position: relative" class="row overflow-auto">
-    <sidebar
-      v-if="drawer"
-      style="position: sticky; top: 0px"
-      @mudaCategoria="categoria = $event"
-    />
+    <sidebar v-if="drawer" @mudaCategoria="categoria = $event" />
     <!--<v-btn
         class="button"
         style="z-index: 1; position: fixed;"
@@ -30,7 +26,7 @@ export default {
   },
   data() {
     return {
-      categoria: '',
+      categoria: 'Vestuário',
       drawer: true,
     }
   },
@@ -43,3 +39,10 @@ export default {
   },
 }
 </script>
+<style>
+.overflow-ellipsis {
+  text-overflow: ellipsis;
+  width: 100%;
+  word-wrap: nowrap;
+}
+</style>

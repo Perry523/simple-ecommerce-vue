@@ -21,19 +21,19 @@
                   class="col-6 col-sm-5 col-md-4 col-lg-3"
                   height="100%"
                   width="100%"
-                  :src="$axios.defaults.baseURL + produto.imgs[0]"
+                  :src="$axios.defaults.baseURL + produto.variante.path"
                 />
                 <div
                   class="flex-grow-1 d-flex flex-column justify-space-around"
                 >
                   <v-card-title
                     class="headline text-center"
-                    v-text="produto.nome"
+                    v-text="produto.name"
                   ></v-card-title>
                   <v-card-subtitle
-                    v-text="'R$ ' + produto.preco"
+                    v-text="'R$ ' + produto.price"
                   ></v-card-subtitle>
-                  <v-card-title> {{ produto.variante }} </v-card-title>
+                  <v-card-title> {{ produto.variante.name }} </v-card-title>
                 </div>
                 <div class="d-flex flex-column justify-between">
                   <v-btn fab icon @click="remover"
@@ -91,7 +91,7 @@ export default {
     produtos() {
       this.preco = this.produtos.length
         ? this.produtos
-            .map((produto) => produto.preco * produto.quantidade)
+            .map((produto) => produto.price * produto.quantidade)
             .reduce((a, b) => a + b)
         : 0
     },
@@ -99,7 +99,7 @@ export default {
   mounted() {
     this.preco = this.produtos.length
       ? this.produtos
-          .map((produto) => produto.preco * produto.quantidade)
+          .map((produto) => produto.price * produto.quantidade)
           .reduce((a, b) => a + b)
       : 0
   },
@@ -107,7 +107,7 @@ export default {
     sum(i) {
       this.$store.commit('cart/sum', i)
       this.preco = this.produtos
-        .map((produto) => produto.preco * produto.quantidade)
+        .map((produto) => produto.price * produto.quantidade)
         .reduce((a, b) => a + b)
     },
     sub(i) {
@@ -115,7 +115,7 @@ export default {
       this.preco =
         this.produtos.length > 0
           ? this.produtos
-              .map((produto) => produto.preco * produto.quantidade)
+              .map((produto) => produto.price * produto.quantidade)
               .reduce((a, b) => a + b)
           : 0
     },

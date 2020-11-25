@@ -13,17 +13,22 @@
       >
         <img
           :src="this.$axios.defaults.baseURL + image"
-          alt=""
+          height="400px"
           width="100%"
           class="image"
         />
         <div class="row imgs-container col">
-          <div v-for="(img, i) in produto.imgs" :key="i" class="imgs">
+          <div
+            v-for="(img, i) in produto.imgs"
+            :key="i"
+            :class="selectedIMG === i ? 'selectedIMG' : ''"
+            class="imgs"
+          >
             <img
               width="100%"
               height="100%"
               :src="$axios.defaults.baseURL + img"
-              @mouseenter="selectImg(img, $event)"
+              @mouseenter="selectImg(i)"
             />
           </div>
         </div>
@@ -33,20 +38,26 @@
         class="d-flex flex-column justify-space-between col-12 col-sm"
       >
         <span class="text-h6 text-md-h5 mb-5 mt-2 mt-sm-5 mb-sm-5">{{
-          produto.nome
+          produto.name
         }}</span>
-        <span class="text-h5 text-md-h4 pl-3 mb-5">R$ {{ produto.preco }}</span>
+        <span class="text-h5 text-md-h4 pl-3 mb-5">R$ {{ produto.price }}</span>
         <div class="d-flex flex-column mb-3 flex-grow-0">
-          <label v-if="selectedVariant" class="mb-4" for="#produtos"
-            >Variante: <b>{{ selectedVariant }}</b></label
+          <label v-if="selectedVariant != null" class="mb-4" for="#produtos"
+            >Variante:
+            <b>{{ produto.variants[selectedVariant].name }}</b></label
           >
           <div id="produtos" class="row">
-            <div v-for="(variant, i) in produto.variants" :key="i" class="imgs">
+            <div
+              v-for="(variant, i) in produto.variants"
+              :key="i"
+              :class="selectedVariant === i ? 'selectedVariant' : ''"
+              class="imgs"
+            >
               <img
                 width="100%"
                 height="100%"
                 :src="$axios.defaults.baseURL + variant.path"
-                @click="selectVariant(variant, $event)"
+                @click="selectVariant(i)"
               />
             </div>
           </div>
@@ -76,11 +87,12 @@ export default {
       produto: {
         imgs: [''],
       },
-      image: '',
-      selectedVariant: 0,
+      selectedIMG: 0,
+      selectedVariant: null,
       quantidade: 1,
       snackbar: false,
       snackText: '',
+      image: '',
     }
   },
   computed: mapGetters({
@@ -98,8 +110,8 @@ export default {
   methods: {
     add(produto) {
       produto.quantidade = this.quantidade
-      if (this.selectedVariant) {
-        produto.variante = this.selectedVariant
+      if (this.selectedVariant !== null) {
+        produto.variante = this.produto.variants[this.selectedVariant]
         try {
           this.$store.commit('cart/add', produto)
           this.snackbar = true
@@ -113,18 +125,13 @@ export default {
         this.snackText = 'Selecione uma variante'
       }
     },
-    selectVariant(variant, e) {
-      const selected = document.getElementsByClassName('selectedVariant')
-      if (selected.length) selected[0].classList.remove('selectedVariant')
-      e.target.parentElement.classList.add('selectedVariant')
-      this.image = variant.path
-      this.selectedVariant = variant.variant
+    selectImg(i) {
+      this.selectedIMG = i
+      this.image = this.produto.imgs[i]
     },
-    selectImg(img, e) {
-      const selected = document.getElementsByClassName('selectedIMG')
-      if (selected.length) selected[0].classList.remove('selectedIMG')
-      e.target.parentElement.classList.add('selectedIMG')
-      this.image = img
+    selectVariant(i) {
+      this.selectedVariant = i
+      this.image = this.produto.variants[i].path
     },
   },
 }

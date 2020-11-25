@@ -172,3 +172,9 @@ export default {
   },
 }
 </script>
+<style>
+.sticky {
+  position: sticky;
+  top: 80px;
+}
+</style>

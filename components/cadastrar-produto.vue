@@ -8,7 +8,13 @@
           for="imgs"
         >
           <img
-            :src="imgs.length ? imgs[selectedImage].img : placeholder"
+            :src="
+              imgs.length
+                ? typeof imgs[selectedImage] === 'string'
+                  ? $axios.defaults.baseURL + imgs[selectedImage]
+                  : imgs[selectedImage].img
+                : placeholder
+            "
             width="90%"
             height="100%"
             class="label"
@@ -27,7 +33,11 @@
             @mouseenter="selectedImage = i"
           >
             <img
-              :src="img.img"
+              :src="
+                typeof img === 'string'
+                  ? $axios.defaults.baseURL + img
+                  : img.img
+              "
               :class="selectedImage === i ? 'selectedIMG' : ''"
               height="100%"
               width="100%"
@@ -65,7 +75,7 @@
           />
           <v-select
             id="Categoria"
-            v-model="produto.type"
+            v-model="produto.category"
             :items="categorias"
             name="Categoria"
             label="Categoria"
@@ -187,15 +197,21 @@ export default {
   },
   watch: {
     produtoEditavel() {
-      this.produto = this.produtoEditavel
-      if (this.produtoEditavel.id) {
+      this.produto = Object.assign({}, this.produtoEditavel)
+      this.imgs = this.produto.imgs ? this.produto.imgs : []
+      this.variants = this.produto.variants ? this.produto.variants : []
+
+      if (this.produto.id) {
         this.edit = true
       }
     },
   },
   async mounted() {
-    this.produto = this.produtoEditavel
-    if (this.produtoEditavel.id) {
+    this.produto = Object.assign({}, this.produtoEditavel)
+    this.imgs = this.produto.imgs ? this.produto.imgs : []
+    this.variants = this.produto.variants ? this.produto.variants : []
+
+    if (this.produto.id) {
       this.edit = true
     }
     this.categorias = await this.$axios
@@ -229,22 +245,13 @@ export default {
           JSON.stringify({ name: variant.name, stock: variant.stock })
         )
       })
-      if (this.edit) {
-        this.$axios
-          .put('/products/' + this.produto.id, formData, {
-            headers: {
-              'Content-Type': `multipart/form-data;`,
-            },
-          })
-          .then(() => this.$emit('close-modal'))
-          .catch((error) => alert(error.message))
-      }
-      this.$axios
-        .post('/products', formData, {
-          headers: {
-            'Content-Type': `multipart/form-data;`,
-          },
-        })
+      const link = this.edit ? '/products/' + this.produto.id : '/products'
+      const axiosAction = this.edit ? 'put' : 'post'
+      this.$axios[axiosAction](link, formData, {
+        headers: {
+          'Content-Type': `multipart/form-data;`,
+        },
+      })
         .then(() => this.$emit('close-modal'))
         .catch((error) => alert(error.message))
     },

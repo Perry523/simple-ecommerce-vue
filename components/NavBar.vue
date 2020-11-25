@@ -1,6 +1,6 @@
 <template>
   <v-app-bar
-    style="height: 75px; position: sticky; z-index: 1; top: 0"
+    style="height: 75px; position: sticky; z-index: 2; top: 0"
     class="blue pt-3 pt-md-2 lighten-2 full-width align-center justify-center"
   >
     <router-link class="fill-height" to="/">
