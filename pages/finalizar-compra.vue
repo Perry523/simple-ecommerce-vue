@@ -6,7 +6,7 @@
         v-for="(endereco, i) in enderecos"
         :key="i"
         class="col"
-        @click="finalizar"
+        @click="finalizar(i)"
       >
         <endereco
           v-ripple
@@ -41,11 +41,24 @@ export default {
     })
   },
   methods: {
-    finalizar() {
+    finalizar(i) {
+      this.enderecoSelecionado = i
       const pedido = {}
       pedido.cart = this.cart
-      pedido.adress = this.enderecos[this.enderecoSelecionado]
-      this.$axios.post('/finalizar-pedido', pedido)
+      pedido.address = this.enderecos[this.enderecoSelecionado]
+      this.$axios
+        .post('/pedido', pedido, {
+          headers: {
+            Authorization: 'Bearer ' + window.localStorage.getItem('token'),
+          },
+        })
+        .then(() => {
+          this.$store.commit('cart/removeAll')
+          this.$router.push('/home')
+        })
+        .catch(() => {
+          console.log('erro')
+        })
     },
   },
 }

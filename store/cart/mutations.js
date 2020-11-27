@@ -15,6 +15,9 @@ export default {
   remove(state, index) {
     state.cart.splice(index, 1)
   },
+  removeAll(state, index) {
+    state.cart = []
+  },
   sum(state, index) {
     state.cart[index].quantidade++
   },
