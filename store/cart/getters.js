@@ -1,5 +1,5 @@
 export default {
-  todos(state) {
+  all(state) {
     return state.cart
   },
 }

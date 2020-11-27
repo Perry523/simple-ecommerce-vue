@@ -3,26 +3,28 @@
     <div class="d-flex flex-wrap">
       <v-text-field
         v-model="filtro.name"
-        class="col-6 col-sm-3 ml-auto"
+        class="col-6 col-sm-5 col-md-3 ml-auto"
         label="Filtrar por nome"
       />
       <v-select
         v-model="filtro.brand"
-        class="col-6 col-sm-3 col-3"
+        class="col-6 col-sm-5 col-md-3"
         label="Filtrar por marca"
         :items="brands"
       ></v-select>
       <v-text-field
         v-model="filtro.min"
-        class="ml-auto ml-md-0 col-3 mr-2 col-sm-1"
+        class="ml-auto ml-lg-0 col-3 mr-2 col-sm-2 col-md-1"
         label="Min"
       />
       <v-text-field
         v-model="filtro.max"
-        class="col-3 col-sm-1 mr-auto"
+        class="col-3 col-sm-2 col-md-1 mr-auto"
         label="Max"
       />
-      <v-btn class="mr-5" color="orange" @click="filtrar">Filtrar</v-btn>
+      <v-btn class="mr-5 white--text" color="orange" @click="filtrar"
+        >Filtrar</v-btn
+      >
     </div>
     <div
       v-if="!carregando"

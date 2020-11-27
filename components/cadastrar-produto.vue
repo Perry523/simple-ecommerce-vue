@@ -140,7 +140,11 @@
             class="label"
             height="60px"
             width="60px"
-            :src="variante.img || placeholder"
+            :src="
+              variante.product_id
+                ? $axios.defaults.baseURL + variante.path
+                : variante.path || placeholder
+            "
         /></label>
         <input
           :id="`upload${i}`"
@@ -268,7 +272,7 @@ export default {
       setTimeout(() => {
         if (i !== undefined) {
           const test = this.variants[i]
-          test.img = file.img
+          test.path = file.img
           this.variants[i].image = file
           this.variants.splice(i, 1, test)
         } else this.imgs.push(file)

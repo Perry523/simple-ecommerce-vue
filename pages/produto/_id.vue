@@ -96,7 +96,7 @@ export default {
     }
   },
   computed: mapGetters({
-    todos: 'cart/todos',
+    todos: 'cart/all',
   }),
   async mounted() {
     this.$axios.defaults.baseURL = this.$axios.defaults.baseURL.replace(

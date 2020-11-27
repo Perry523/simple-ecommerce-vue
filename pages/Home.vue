@@ -32,6 +32,26 @@
               Email: {{ dados.email || 'Não Informado' }}
             </div>
           </div>
+          <div class="mt-5">
+            <p class="q-mb-md q-pb-md align-self-center text-h3">
+              Meus Endereços
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    v-bind="attrs"
+                    large
+                    to="endereco"
+                    class="text-positive"
+                    icon
+                    v-on="on"
+                  >
+                    <v-icon> mdi-plus </v-icon>
+                  </v-btn>
+                </template>
+                <span>Adicionar</span>
+              </v-tooltip>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -49,10 +69,16 @@ export default {
       dados: {},
     }
   },
-  mounted() {
-    this.$axios('/home', {
+  async mounted() {
+    this.dados = await this.$axios.$get('/home', {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
-    }).then((r) => (this.dados = r.data))
+    })
+    this.enderecos = await this.$axios.$get('/endereco', {
+      headers: {
+        Authorization: 'Bearer ' + window.localStorage.getItem('token'),
+      },
+    })
+    // this.$axios.$get
   },
   /* beforeRouteEnter (to,from,next) {
   window.localStorage.getItem('token') ?   next() : next('/login')

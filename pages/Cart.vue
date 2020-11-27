@@ -62,7 +62,9 @@
             Frete: <b class="">R$ {{ frete || 0 }},00</b>
           </p>
           <p class="pt-3 text-h4">Total: R$ {{ preco + frete || 0 }},00</p>
-          <v-btn class="red my-3 white--text">Comprar</v-btn>
+          <v-btn to="finalizar-compra" class="red my-3 white--text"
+            >Comprar</v-btn
+          >
         </div>
       </div>
     </div>
@@ -85,7 +87,7 @@ export default {
     }
   },
   computed: mapGetters({
-    produtos: 'cart/todos',
+    produtos: 'cart/all',
   }),
   watch: {
     produtos() {

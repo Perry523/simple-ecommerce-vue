@@ -12,11 +12,7 @@
         src="~assets/img/logo.png"
         alt=""
       />
-      <v-form
-        style="max-width: 600px"
-        class="full-width col-7 mt-8"
-        @submit="submit"
-      >
+      <div style="max-width: 600px" class="full-width col-7 mt-8">
         <v-text-field
           v-model="user.username"
           outlined=""
@@ -37,6 +33,14 @@
           type="password"
           label="Senha"
         />
+        <div class="mb-8">
+          <sub
+            >Já tem uma conta?
+            <nuxt-link class="text-decoration-none" to="/login"
+              >Entrar</nuxt-link
+            ></sub
+          >
+        </div>
         <div>
           <v-btn
             label="Cadastrar"
@@ -57,7 +61,7 @@
             Limpar
           </v-btn>
         </div>
-      </v-form>
+      </div>
     </div>
   </div>
 </template>
@@ -73,8 +77,9 @@ export default {
     }
   },
   methods: {
-    submit() {
-      this.$axios.post('/register', this.user)
+    async submit() {
+      await this.$axios.post('/register', this.user)
+      this.$router.push('/login')
     },
     limpar() {
       // this.login = {}

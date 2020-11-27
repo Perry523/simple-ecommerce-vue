@@ -36,6 +36,7 @@ export default {
         { title: 'Produtos', to: '/produtos', icon: 'mdi-clipboard-outline' },
         { title: 'Categorias', to: '/categorias', icon: 'mdi-chart-bubble' },
         { title: 'Marcas', to: '/marcas', icon: 'mdi-atlassian' },
+        { title: 'Banner', to: '/banner', icon: 'mdi-image' },
       ],
       right: null,
     }

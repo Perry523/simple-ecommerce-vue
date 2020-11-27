@@ -3,18 +3,17 @@
     <navbar class="flex-grow-0" />
     <div
       style="position: relative"
-      class="d-flex flex-grow-1 flex-column grey lighten-3 align-center justify-center"
+      class="d-flex fill-height flex-grow-1 flex-column align-center"
     >
       <img
-        height="150px"
-        width="200px"
-        style="align-self: center"
+        height="300px"
+        width="300px"
         src="~assets/img/logo.png"
-        alt=""
+        class="pt-15"
       />
-      <v-form
+      <div
         style="max-width: 600px"
-        class="full-width col-7 mt-8"
+        class="full-width pt-15 col-7 fill-height"
         @submit="submit"
       >
         <v-text-field
@@ -30,6 +29,14 @@
           type="password"
           label="Senha"
         />
+        <div class="mb-8">
+          <sub
+            >Não tem uma conta?
+            <nuxt-link class="text-decoration-none" to="/cadastrar"
+              >Cadastrar</nuxt-link
+            ></sub
+          >
+        </div>
         <div>
           <v-btn label="Entrar" type="button" color="primary" @click="submit">
             Entrar
@@ -45,7 +52,7 @@
             Limpar
           </v-btn>
         </div>
-      </v-form>
+      </div>
     </div>
   </div>
 </template>
@@ -64,6 +71,7 @@ export default {
     submit() {
       this.$axios.post('http://localhost:3333/login', this.login).then((r) => {
         localStorage.setItem('token', r.data.token)
+        this.$router.push('/home')
       })
     },
     limpar() {

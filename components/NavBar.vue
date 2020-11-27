@@ -28,7 +28,7 @@
           <v-icon medium>mdi-cart</v-icon>
         </v-btn>
       </v-badge>
-      <v-btn to="/home" fab small color="blue lighten-2">
+      <v-btn fab small color="blue lighten-2" @click="home">
         <v-icon>mdi-account</v-icon>
       </v-btn>
     </div>
@@ -45,11 +45,15 @@ export default {
     }
   },
   computed: mapGetters({
-    produtos: 'cart/todos',
+    produtos: 'cart/all',
   }),
   methods: {
     limpar() {
       this.search = ''
+    },
+    home() {
+      const token = window.localStorage.getItem('token')
+      token ? this.$router.push('/home') : this.$router.push('/login')
     },
   },
 }
